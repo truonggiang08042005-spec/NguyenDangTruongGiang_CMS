@@ -1,122 +1,138 @@
-<?php
-/**
- * The main template file
- *
- * This is the most generic template file in a WordPress theme
- * and one of the two required files for a theme (the other being style.css).
- * It is used to display a page when nothing more specific matches a query.
- * E.g., it puts together the home page when no home.php file exists.
- *
- * @link https://developer.wordpress.org/themes/basics/template-hierarchy/
- *
- * @package WordPress
- * @subpackage Twenty_Twenty
- * @since Twenty Twenty 1.0
- */
+<?php get_header(); ?>
 
-get_header();
-?>
+<style>
+  /* Khung chứa danh sách bài viết */
+  .content-list-container {
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 0 15px;
+  }
 
-<main id="site-content">
+  /* Mỗi thẻ bài viết */
+  .post-card-item {
+      display: flex !important;
+      align-items: center !important;
+      background: #ffffff !important;
+      border: 1px solid #e2e8f0 !important;
+      border-radius: 6px !important;
+      padding: 20px !important;
+      margin-bottom: 20px !important;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02) !important;
+  }
 
-	<?php
+  /* 1. Cột Ngày & Tháng */
+  .post-card-date {
+      width: 80px !important;
+      min-width: 80px !important;
+      text-align: center !important;
+      padding-right: 15px !important;
+      margin-right: 15px !important;
+      border-right: 1px solid #cbd5e1 !important;
+  }
 
-	$archive_title    = '';
-	$archive_subtitle = '';
+  .post-card-date .day-num {
+      font-size: 36px !important;
+      font-weight: 800 !important;
+      line-height: 1 !important;
+      color: #1e293b !important;
+      font-family: Georgia, serif !important;
+  }
 
-	if ( is_search() ) {
-		/**
-		 * @global WP_Query $wp_query WordPress Query object.
-		 */
-		global $wp_query;
+  .post-card-date .month-text {
+      font-size: 11px !important;
+      color: #64748b !important;
+      text-transform: uppercase !important;
+      margin-top: 6px !important;
+  }
 
-		$archive_title = sprintf(
-			'%1$s &ldquo;%2$s&rdquo;',
-			'<span class="color-accent">' . __( 'Search:', 'twentytwenty' ) . '</span>',
-			esc_html( get_search_query( false ) )
-		);
+  /* 2. Cột Ảnh đại diện sản phẩm/bài viết */
+  .post-card-thumb {
+      width: 140px !important;
+      height: 100px !important;
+      min-width: 140px !important;
+      margin-right: 20px !important;
+      overflow: hidden;
+      border-radius: 4px;
+      background-color: #f1f5f9;
+  }
 
-		if ( $wp_query->found_posts ) {
-			$archive_subtitle = sprintf(
-				/* translators: %s: Number of search results. */
-				_n(
-					'We found %s result for your search.',
-					'We found %s results for your search.',
-					$wp_query->found_posts,
-					'twentytwenty'
-				),
-				number_format_i18n( $wp_query->found_posts )
-			);
-		} else {
-			$archive_subtitle = __( 'We could not find any results for your search. You can give it another try through the search form below.', 'twentytwenty' );
-		}
-	} elseif ( is_archive() && ! have_posts() ) {
-		$archive_title = __( 'Nothing Found', 'twentytwenty' );
-	} elseif ( ! is_home() ) {
-		$archive_title    = get_the_archive_title();
-		$archive_subtitle = get_the_archive_description();
-	}
+  .post-card-thumb img {
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover !important;
+      display: block;
+  }
 
-	if ( $archive_title || $archive_subtitle ) {
-		?>
+  /* 3. Cột Tiêu đề & Tóm tắt */
+  .post-card-info {
+      flex: 1 !important;
+  }
 
-		<header class="archive-header has-text-align-center header-footer-group">
+  .post-card-title {
+      font-size: 16px !important;
+      font-weight: 700 !important;
+      margin: 0 0 8px 0 !important;
+      line-height: 1.4 !important;
+      text-transform: uppercase !important;
+  }
 
-			<div class="archive-header-inner section-inner medium">
+  .post-card-title a {
+      color: #0284c7 !important;
+      text-decoration: none !important;
+  }
 
-				<?php if ( $archive_title ) { ?>
-					<h1 class="archive-title"><?php echo wp_kses_post( $archive_title ); ?></h1>
-				<?php } ?>
+  .post-card-title a:hover {
+      text-decoration: underline !important;
+  }
 
-				<?php if ( $archive_subtitle ) { ?>
-					<div class="archive-subtitle section-inner thin max-percentage intro-text"><?php echo wp_kses_post( wpautop( $archive_subtitle ) ); ?></div>
-				<?php } ?>
+  .post-card-excerpt {
+      font-size: 13px !important;
+      color: #64748b !important;
+      margin: 0 !important;
+      line-height: 1.5 !important;
+  }
+</style>
 
-			</div><!-- .archive-header-inner -->
+<div class="content-list-container">
+    <?php if ( have_posts() ) : ?>
+        <?php while ( have_posts() ) : the_post(); 
+            $day = get_the_date('d');
+            $month = get_the_date('m');
+        ?>
+            
+            <article class="post-card-item">
+                <!-- 1. Ngày / Tháng -->
+                <div class="post-card-date">
+                    <div class="day-num"><?php echo $day; ?></div>
+                    <div class="month-text">THÁNG <?php echo $month; ?></div>
+                </div>
 
-		</header><!-- .archive-header -->
+                <!-- 2. Ảnh Đại Diện (Nếu bài viết không có ảnh sẽ dùng ảnh mặc định) -->
+                <div class="post-card-thumb">
+                    <a href="<?php the_permalink(); ?>">
+                        <?php if ( has_post_thumbnail() ) : ?>
+                            <?php the_post_thumbnail('medium'); ?>
+                        <?php else : ?>
+                            <img src="https://via.placeholder.com/140x100?text=No+Image" alt="<?php the_title(); ?>" />
+                        <?php endif; ?>
+                    </a>
+                </div>
 
-		<?php
-	}
+                <!-- 3. Tiêu đề & Tóm tắt -->
+                <div class="post-card-info">
+                    <h2 class="post-card-title">
+                        <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+                    </h2>
+                    <p class="post-card-excerpt">
+                        <?php echo wp_trim_words( get_the_excerpt(), 20, ' [...]' ); ?>
+                    </p>
+                </div>
+            </article>
 
-	if ( have_posts() ) {
+        <?php endwhile; ?>
+    <?php else : ?>
+        <p>Chưa có bài viết nào.</p>
+    <?php endif; ?>
+</div>
 
-		$i = 0;
-
-		while ( have_posts() ) {
-			++$i;
-			if ( $i > 1 ) {
-				echo '<hr class="post-separator styled-separator is-style-wide section-inner" aria-hidden="true" />';
-			}
-			the_post();
-
-			get_template_part( 'template-parts/content', get_post_type() );
-
-		}
-	} elseif ( is_search() ) {
-		?>
-
-		<div class="no-search-results-form section-inner thin">
-
-			<?php
-			get_search_form(
-				array(
-					'aria_label' => __( 'search again', 'twentytwenty' ),
-				)
-			);
-			?>
-
-		</div><!-- .no-search-results -->
-
-		<?php
-	}
-	?>
-
-	<?php get_template_part( 'template-parts/pagination' ); ?>
-
-</main><!-- #site-content -->
-
-<?php get_template_part( 'template-parts/footer-menus-widgets' ); ?>
-
-<?php
-get_footer();
+<?php get_footer(); ?>
