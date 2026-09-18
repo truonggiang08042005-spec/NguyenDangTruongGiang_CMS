@@ -20,13 +20,13 @@
 
 // ** Database settings - You can get this info from your web host ** //
 /** The name of the database for WordPress */
-define( 'DB_NAME', 'database_name_here' );
+define( 'DB_NAME', 'wordpress_truonggiang' );
 
 /** Database username */
-define( 'DB_USER', 'username_here' );
+define( 'DB_USER', 'root' );
 
 /** Database password */
-define( 'DB_PASSWORD', 'password_here' );
+define( 'DB_PASSWORD', '' );
 
 /** Database hostname */
 define( 'DB_HOST', 'localhost' );
@@ -48,14 +48,14 @@ define( 'DB_COLLATE', '' );
  *
  * @since 2.6.0
  */
-define( 'AUTH_KEY',         'put your unique phrase here' );
-define( 'SECURE_AUTH_KEY',  'put your unique phrase here' );
-define( 'LOGGED_IN_KEY',    'put your unique phrase here' );
-define( 'NONCE_KEY',        'put your unique phrase here' );
-define( 'AUTH_SALT',        'put your unique phrase here' );
-define( 'SECURE_AUTH_SALT', 'put your unique phrase here' );
-define( 'LOGGED_IN_SALT',   'put your unique phrase here' );
-define( 'NONCE_SALT',       'put your unique phrase here' );
+define( 'AUTH_KEY',         'antigravity_secret_key_wp_truonggiang_1' );
+define( 'SECURE_AUTH_KEY',  'antigravity_secret_key_wp_truonggiang_2' );
+define( 'LOGGED_IN_KEY',    'antigravity_secret_key_wp_truonggiang_3' );
+define( 'NONCE_KEY',        'antigravity_secret_key_wp_truonggiang_4' );
+define( 'AUTH_SALT',        'antigravity_secret_key_wp_truonggiang_5' );
+define( 'SECURE_AUTH_SALT', 'antigravity_secret_key_wp_truonggiang_6' );
+define( 'LOGGED_IN_SALT',   'antigravity_secret_key_wp_truonggiang_7' );
+define( 'NONCE_SALT',       'antigravity_salt_wp_truonggiang_8' );
 
 /**#@-*/
 
@@ -88,8 +88,6 @@ $table_prefix = 'wp_';
 define( 'WP_DEBUG', false );
 
 /* Add any custom values between this line and the "stop editing" line. */
-
-
 
 /* That's all, stop editing! Happy publishing. */
 
