@@ -1,108 +1,133 @@
 <?php get_header(); ?>
 
 <style>
-  .search-results-page {
-      max-width: 900px !important;
-      margin: 40px auto !important;
-      padding: 0 15px !important;
-      clear: both !important;
+  /* Khung bọc trang tìm kiếm */
+  .search-page-container {
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 0 15px;
+      font-family: Arial, sans-serif;
   }
-  .search-result-item {
-      display: flex !important;
-      flex-direction: row !important;
-      align-items: center !important;
-      border: 1px solid #e0e0e0 !important;
-      padding: 15px !important;
-      margin-bottom: 20px !important;
-      background: #fff !important;
+
+  .search-page-title {
+      font-size: 22px;
+      font-weight: bold;
+      color: #333333;
+      margin-bottom: 20px;
+      text-align: center;
+  }
+
+  .search-page-title span {
+      color: #dc2626; /* Tô đỏ từ khóa */
+  }
+
+  /* Giao diện khi không tìm thấy */
+  .search-no-results-text {
+      color: #666666;
+      font-size: 14px;
+      text-align: center;
+      max-width: 500px;
+      margin: 0 auto 30px auto;
+      line-height: 1.5;
+  }
+
+  .search-box-wrapper {
+      background-color: #f7f3e9;
+      padding: 30px 20px;
+      border-radius: 4px;
+      display: flex;
+      justify-content: center;
+  }
+
+  .custom-search-form {
+      display: flex;
+      align-items: center;
+      background: #ffffff;
+      border-radius: 4px;
+      padding: 6px 12px;
+      width: 100%;
+      max-width: 500px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  }
+
+  .custom-search-form input[type="search"] {
+      border: none !important;
+      outline: none !important;
+      width: 100%;
+      font-size: 15px;
+      background: transparent !important;
+  }
+
+  .custom-search-form button {
+      background-color: #22c55e !important;
+      color: #ffffff !important;
+      border: none !important;
+      padding: 8px 20px !important;
       border-radius: 4px !important;
-  }
-  .search-item-thumb {
-      width: 180px !important;
-      min-width: 180px !important;
-      height: 110px !important;
-      overflow: hidden !important;
-      margin-right: 20px !important;
-  }
-  .search-item-thumb img {
-      width: 100% !important;
-      height: 100% !important;
-      object-fit: cover !important;
-  }
-  .search-item-date {
-      width: 90px !important;
-      min-width: 90px !important;
-      text-align: center !important;
-      padding: 0 10px !important;
-      border-left: 1px solid #ddd !important;
-      border-right: 1px solid #ddd !important;
-      margin-right: 20px !important;
-  }
-  .search-item-date .day {
-      font-size: 26px !important;
       font-weight: bold !important;
-      line-height: 1 !important;
-      color: #333 !important;
-  }
-  .search-item-date .month {
-      font-size: 11px !important;
-      color: #666 !important;
-      text-transform: uppercase !important;
-      margin-top: 5px !important;
-  }
-  .search-item-info {
-      flex: 1 !important;
-  }
-  .search-item-title {
-      font-size: 18px !important;
-      font-weight: bold !important;
-      margin: 0 0 8px 0 !important;
-  }
-  .search-item-title a {
-      color: #0056b3 !important;
-      text-decoration: none !important;
-  }
-  .search-item-excerpt {
-      font-size: 13px !important;
-      color: #555 !important;
-      margin: 0 !important;
-      line-height: 1.5 !important;
+      cursor: pointer !important;
   }
 </style>
 
-<div class="search-results-page">
+<div class="search-page-container">
+    <h1 class="search-page-title">
+        Kết quả tìm kiếm cho: "<span><?php echo esc_html( get_search_query() ); ?></span>"
+    </h1>
+
     <?php if ( have_posts() ) : ?>
-        <?php while ( have_posts() ) : the_post(); 
-            $post_id = get_the_ID();
-            $post_day = get_the_date('d', $post_id);
-            $post_month = get_the_date('m', $post_id);
-        ?>
-            <div class="search-result-item">
-                <div class="search-item-thumb">
-                    <?php if ( has_post_thumbnail() ) : ?>
-                        <?php the_post_thumbnail('medium'); ?>
-                    <?php else : ?>
-                        <img src="https://via.placeholder.com/180x110" alt="No Image">
-                    <?php endif; ?>
-                </div>
+        
+        <!-- Danh sách kết quả gần giống tìm thấy -->
+        <div class="search-results-list">
+            <?php while ( have_posts() ) : the_post(); 
+                $day = get_the_date('d');
+                $month = get_the_date('m');
+            ?>
+                <article class="post-card-item">
+                    <!-- 1. Ngày / Tháng -->
+                    <div class="post-card-date">
+                        <div class="day-num"><?php echo $day; ?></div>
+                        <div class="month-text">THÁNG <?php echo $month; ?></div>
+                    </div>
 
-                <div class="search-item-date">
-                    <div class="day"><?php echo $post_day; ?></div>
-                    <div class="month">THÁNG <?php echo $post_month; ?></div>
-                </div>
+                    <!-- 2. Ảnh Đại Diện -->
+                    <div class="post-card-thumb">
+                        <a href="<?php the_permalink(); ?>">
+                            <?php if ( has_post_thumbnail() ) : ?>
+                                <?php the_post_thumbnail('medium'); ?>
+                            <?php else : ?>
+                                <img src="https://via.placeholder.com/140x100?text=No+Image" alt="<?php the_title(); ?>" />
+                            <?php endif; ?>
+                        </a>
+                    </div>
 
-                <div class="search-item-info">
-                    <h3 class="search-item-title">
-                        <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-                    </h3>
-                    <p class="search-item-excerpt">
-                        <?php echo wp_trim_words( get_the_excerpt(), 25, ' [...]' ); ?>
-                    </p>
-                </div>
-            </div>
-        <?php endwhile; ?>
+                    <!-- 3. Tiêu đề & Tóm tắt -->
+                    <div class="post-card-info">
+                        <h2 class="post-card-title">
+                            <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+                        </h2>
+                        <p class="post-card-excerpt">
+                            <?php echo wp_trim_words( get_the_excerpt(), 20, ' [...]' ); ?>
+                        </p>
+                    </div>
+                </article>
+            <?php endwhile; ?>
+        </div>
+
     <?php else : ?>
-        <p>Không tìm thấy kết quả phù hợp.</p>
+
+        <!-- Không tìm thấy kết quả phù hợp -->
+        <p class="search-no-results-text">
+            Không tìm thấy bài viết hoặc sản phẩm nào phù hợp với từ khóa của bạn. Vui lòng thử lại với từ khóa khác.
+        </p>
+
+        <div class="search-box-wrapper">
+            <form role="search" method="get" class="custom-search-form" action="<?php echo esc_url( home_url( '/' ) ); ?>">
+                <span style="margin-right: 8px;">🔍</span>
+                <input type="search" placeholder="Nhập từ khóa tìm kiếm..." value="<?php echo get_search_query(); ?>" name="s" required />
+                <button type="submit">Tìm kiếm</button>
+            </form>
+        </div>
+
     <?php endif; ?>
 </div>
 

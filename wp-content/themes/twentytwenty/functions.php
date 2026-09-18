@@ -829,3 +829,39 @@ function twentytwenty_get_elements_array() {
 	 */
 	return apply_filters( 'twentytwenty_get_elements_array', $elements );
 }
+/**
+ * Tối ưu hóa tìm kiếm: Tìm kiếm gần đúng và linh hoạt theo từng từ khóa
+ */
+function custom_fuzzy_search_query( $search, $wp_query ) {
+    global $wpdb;
+
+    if ( empty( $search ) || ! $wp_query->is_search() || ! $wp_query->is_main_query() ) {
+        return $search;
+    }
+
+    $q = $wp_query->query_vars;
+    $n = ! empty( $q['exact'] ) ? '' : '%';
+    $search = '';
+    $searchand = '';
+
+    // Lấy từ khóa tìm kiếm và làm sạch
+    $search_term = esc_sql( $q['s'] );
+    // Tách các từ trong chuỗi tìm kiếm (ví dụ: "may giat" -> ["may", "giat"])
+    $terms = explode( ' ', $search_term );
+
+    if ( count( $terms ) > 0 ) {
+        $search .= " AND (";
+        foreach ( $terms as $term ) {
+            $term = trim( $term );
+            if ( ! empty( $term ) ) {
+                // Tìm gần đúng trong Tiêu đề hoặc Nội dung bài viết
+                $search .= "{$searchand}(({$wpdb->posts}.post_title LIKE '{$n}{$term}{$n}') OR ({$wpdb->posts}.post_content LIKE '{$n}{$term}{$n}'))";
+                $searchand = ' OR '; // Sử dụng OR để tìm các kết quả gần giống/chứa ít nhất 1 từ
+            }
+        }
+        $search .= ")";
+    }
+
+    return $search;
+}
+add_filter( 'posts_search', 'custom_fuzzy_search_query', 50, 2 );
